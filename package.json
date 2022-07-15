@@ -1,0 +1,25 @@
+{
+  "name": "natours_v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HPAnonymous/natours_v2.git"
+  },
+  "author": "HieuPham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HPAnonymous/natours_v2/issues"
+  },
+  "homepage": "https://github.com/HPAnonymous/natours_v2#readme",
+  "dependencies": {
+    "e": "^0.2.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.4",
+    "morgan": "^1.10.0"
+  }
+}
