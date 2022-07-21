@@ -1,3 +1,5 @@
+/* eslint-disable import/no-useless-path-segments */
+/* eslint-disable import/extensions */
 // eslint-disable-next-line import/no-useless-path-segments
 const Tour = require('./../models/tourModels');
 const APIfeature = require('./../utils/apiFeatures');

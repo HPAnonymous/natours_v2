@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const catchAsync = require('../utils/catchAsync');
+// eslint-disable-next-line import/no-useless-path-segments
 const User = require('./../models/userModels');
 const AppError = require('../utils/appError');
 

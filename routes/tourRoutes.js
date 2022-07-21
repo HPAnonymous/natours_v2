@@ -1,3 +1,4 @@
+/* eslint-disable import/no-useless-path-segments */
 const express = require('express');
 
 // eslint-disable-next-line import/no-useless-path-segments
