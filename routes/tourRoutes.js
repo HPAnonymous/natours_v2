@@ -2,6 +2,7 @@ const express = require('express');
 
 // eslint-disable-next-line import/no-useless-path-segments
 const tourControllers = require('./../controllers/tourControllers');
+const authController = require('./../controllers/authorController');
 
 const tourRouter = express.Router();
 
@@ -14,11 +15,16 @@ tourRouter.route('/monthlyPlan:year').get(tourControllers.getMonthlyPlan);
 
 tourRouter
   .route('/')
-  .get(tourControllers.getAllTours)
+  .get(authController.protect, tourControllers.getAllTours)
   .post(tourControllers.createTour);
 tourRouter
   .route('/:id')
   .get(tourControllers.getTour)
-  .patch(tourControllers.updateTour);
+  .patch(tourControllers.updateTour)
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourControllers.deleteTour
+  );
 
 module.exports = tourRouter;

@@ -17,8 +17,8 @@ if (process.env.NOVE_ENV === 'DEVELOPMENT') {
 
 app.use(express.static(`${__dirname}/public`));
 
-app.use('/api/v1/tours/', tourRouter);
-app.use('/api/v1/tours/', userRouter);
+app.use('/api/v1/tour/', tourRouter);
+app.use('/api/v1/user/', userRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`cant query with ${req.originalUrl}`, 404));
