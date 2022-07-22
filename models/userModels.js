@@ -85,6 +85,14 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  // this.passwordResetToken = undefined;
+  // this.passwordResetExpires = undefined;
+  next();
+});
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
