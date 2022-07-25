@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-useless-path-segments */
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const User = require('./../models/userModels');

@@ -1,6 +1,8 @@
+/* eslint-disable prefer-arrow-callback */
 const mongoose = require('mongoose');
-const slugify = require('slugify');
-const validator = require('validator');
+// const slugify = require('slugify');
+// const validator = require('validator');
+const User = require('./userModels');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -78,6 +80,30 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: Array,
   },
   {
     toJSON: { virtuals: true },
@@ -87,6 +113,12 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.virtual('durationWeek').get(function () {
   return this.duration / 7;
+});
+
+tourSchema.pre('save', async function (next) {
+  const guidesPromise = this.guides.map((el) => User.findById(el).exec());
+  this.guides = await Promise.all(guidesPromise);
+  next();
 });
 
 // eslint-disable-next-line prefer-arrow-callback
