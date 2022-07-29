@@ -1,7 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
 const mongoose = require('mongoose');
-// const slugify = require('slugify');
-// const validator = require('validator');
+const slugify = require('slugify');
+const validator = require('validator');
 const User = require('./userModels');
 
 const tourSchema = new mongoose.Schema(
@@ -103,7 +103,12 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: Array,
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -115,16 +120,30 @@ tourSchema.virtual('durationWeek').get(function () {
   return this.duration / 7;
 });
 
-tourSchema.pre('save', async function (next) {
-  const guidesPromise = this.guides.map((el) => User.findById(el).exec());
-  this.guides = await Promise.all(guidesPromise);
-  next();
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
+
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromise = this.guides.map((el) => User.findById(el).exec());
+//   this.guides = await Promise.all(guidesPromise);
+//   next();
+// });
 
 // eslint-disable-next-line prefer-arrow-callback
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v ',
+  });
   next();
 });
 

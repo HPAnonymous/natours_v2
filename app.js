@@ -8,6 +8,7 @@ const hpp = require('hpp');
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoute');
 const globalErrorHandler = require('./controllers/errorControllers');
 
 const app = express();
@@ -51,6 +52,7 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use('/api/v1/tour/', tourRouter);
 app.use('/api/v1/user/', userRouter);
+app.use('/api/v1/reviews/', reviewRouter);
 
 app.use('*', (req, res, next) => {
   next(new AppError(`cant query with ${req.originalUrl}`, 404));

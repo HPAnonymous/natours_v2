@@ -9,21 +9,26 @@ userRouter.route('/signup').post(authorController.signup);
 userRouter.route('/login').post(authorController.login);
 userRouter.route('/forgotPassword').post(authorController.forgotPassword);
 userRouter.route('/resetPassword/:token').patch(authorController.passwordReset);
-userRouter
-  .route('/updateMe')
-  .patch(authorController.protect, userControllers.updateMe);
 
-userRouter
-  .route('/deleteMe')
-  .delete(authorController.protect, userControllers.deleteMe);
+userRouter.use(authorController.protect);
 
-userRouter
-  .route('/')
-  .get(userControllers.getAllUsers)
-  .post(userControllers.createUser);
+userRouter.route('/updateMyPassword').patch(authorController.updatePassword);
+
+userRouter.route('/updateMe').patch(userControllers.updateMe);
+
+userRouter.route('/deleteMe').delete(userControllers.deleteMe);
+
+userRouter.route('/me').get(userControllers.getMe, userControllers.getUser);
+
+userRouter.use(authorController.restrictTo('admin'));
+
+userRouter.route('/').get(userControllers.getAllUsers);
+// .post(userControllers.createUser);
+
 userRouter
   .route('/:id')
   .get(userControllers.getUser)
-  .post(userControllers.deleteUser);
+  .post(userControllers.deleteUser)
+  .patch(userControllers.updateUser);
 
 module.exports = userRouter;

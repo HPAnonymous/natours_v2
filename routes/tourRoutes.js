@@ -4,8 +4,12 @@ const express = require('express');
 // eslint-disable-next-line import/no-useless-path-segments
 const tourControllers = require('./../controllers/tourControllers');
 const authController = require('./../controllers/authorController');
+// const reviewController = require('./../controllers/reviewController');
+const reviewRouter = require('./../routes/reviewRoute');
 
 const tourRouter = express.Router();
+
+tourRouter.use('/:tourId/reviews', reviewRouter);
 
 tourRouter
   .route('/top-5-cheap')
@@ -16,16 +20,32 @@ tourRouter.route('/monthlyPlan:year').get(tourControllers.getMonthlyPlan);
 
 tourRouter
   .route('/')
-  .get(authController.protect, tourControllers.getAllTours)
-  .post(tourControllers.createTour);
+  .get(tourControllers.getAllTours)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourControllers.createTour
+  );
 tourRouter
   .route('/:id')
   .get(tourControllers.getTour)
-  .patch(tourControllers.updateTour)
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourControllers.updateTour
+  )
   .delete(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
     tourControllers.deleteTour
   );
+
+// tourRouter
+//   .route('/:tourId/reviews')
+//   .post(
+//     authController.protect,
+//     authController.restrictTo('user'),
+//     reviewController.createReview
+//   );
 
 module.exports = tourRouter;

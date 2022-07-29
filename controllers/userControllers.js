@@ -3,7 +3,8 @@
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const User = require('./../models/userModels');
-const APIfeature = require('./../utils/apiFeatures');
+const factory = require('./handlerFactory');
+// const APIfeature = require('./../utils/apiFeatures');
 
 const filterObj = (obj, ...allowFields) => {
   const newObj = {};
@@ -13,41 +14,17 @@ const filterObj = (obj, ...allowFields) => {
   return newObj;
 };
 
-exports.getUser = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-  });
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 };
 
-exports.createUser = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-  });
-};
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
 
-exports.deleteUser = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-  });
-};
-
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const features = new APIfeature(User.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  const users = await features.query;
-
-  res.status(200).json({
-    status: 'Success',
-    length: users.length,
-    data: {
-      users,
-    },
-  });
-});
+// Do NOT update passwords with this!
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfrim)
