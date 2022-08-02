@@ -1,8 +1,8 @@
 /* eslint-disable prefer-arrow-callback */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const validator = require('validator');
-const User = require('./userModels');
+// const validator = require('validator');
+// const User = require('./userModels');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -37,6 +37,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10,
     },
     ratingsQuantity: {
       type: Number,
@@ -81,6 +82,7 @@ const tourSchema = new mongoose.Schema(
       default: false,
     },
     startLocation: {
+      // GeoJSON
       type: {
         type: String,
         default: 'Point',
@@ -116,6 +118,12 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+tourSchema.index({ price: 1 });
+// tourSchema.index({ slug: 1 });
+tourSchema.index({
+  startLocation: '2dsphere',
+});
+
 tourSchema.virtual('durationWeek').get(function () {
   return this.duration / 7;
 });
@@ -124,6 +132,11 @@ tourSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'tour',
   localField: '_id',
+});
+
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
 });
 
 // tourSchema.pre('save', async function (next) {
@@ -153,15 +166,15 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({
-    $match: {
-      secretTour: { $ne: true },
-    },
-  });
-  console.log(this.pipeline());
-  next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({
+//     $match: {
+//       secretTour: { $ne: true },
+//     },
+//   });
+//   console.log(this.pipeline());
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 

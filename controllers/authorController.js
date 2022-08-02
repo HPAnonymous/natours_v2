@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
 const catchAsync = require('../utils/catchAsync');
-const User = require('./../models/userModels');
+const User = require('../models/userModels');
 const AppError = require('../utils/appError');
-const sendMail = require('./../utils/email');
+const sendMail = require('../utils/email');
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.SECRET_KEY, {
@@ -117,7 +117,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
+  )}/api/v1/user/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to:
    ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;

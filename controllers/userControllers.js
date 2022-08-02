@@ -2,7 +2,7 @@
 /* eslint-disable import/no-useless-path-segments */
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const User = require('./../models/userModels');
+const User = require('../models/userModels');
 const factory = require('./handlerFactory');
 // const APIfeature = require('./../utils/apiFeatures');
 

@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -12,6 +13,15 @@ const reviewRouter = require('./routes/reviewRoute');
 const globalErrorHandler = require('./controllers/errorControllers');
 
 const app = express();
+
+app.set('view engine', 'pug');
+
+// console.log(__dirname);
+
+app.set('views', path.join(__dirname, 'views'));
+
+// app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(helmet());
 
@@ -48,7 +58,12 @@ if (process.env.NOVE_ENV === 'DEVELOPMENT') {
   app.use(morgan('dev'));
 }
 
-app.use(express.static(`${__dirname}/public`));
+app.get('/', (req, res) => {
+  res.status(200).render('base', {
+    tour: 'HP HIGHER',
+    user: 'HP',
+  });
+});
 
 app.use('/api/v1/tour/', tourRouter);
 app.use('/api/v1/user/', userRouter);
